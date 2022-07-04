@@ -1,0 +1,19 @@
+{
+  "name": "tfe-blockchain",
+  "version": "1.0.0",
+  "description": "unir",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0"
+  }
+}

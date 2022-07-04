@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.35/dist/web3.min.js"></script> 
+    
+    <title>Web3 Propietario Parcelas</title>
+  </head>
+  <body>
+    <!------------------------------------------------------------------------------------------------------------------------------------------>
+    <!-----------------------------------------------------------S-T-A-R-T----S-C-R-I-P-T------------------------------------------------------->
+    <!------------------------------------------------------------------------------------------------------------------------------------------>
+    <script>
+
+        //Variables
+        var contractAddressDroneToken = "0xC80E5D9340e9A301601C41928026A9D2762cb8f7";
+        var contractAddressPlotToken = "0xC9bde3ECFF87cb9858532A66BEd40Ad531E74c5A";
+        var contractAddressFumigationToken = "0xDa95c5db12269620e34A11AbaADA44FcCB4a32AA";
+        var contractAddressFumigation = "0x23026C00d6553ff282f6b956E0D2c91e960f7825";
+        var companyAccount = "0x5b953f27fC7E5399822F82981Ac57017458d4fc6"; //Address Account Company Drones MetaMask
+
+        const ABIDroneToken = [{"inputs":[{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"droneId","type":"uint256"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"address","name":"me","type":"address"}],"name":"mintDrone","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"droneList","outputs":[{"internalType":"uint256","name":"minimumHeight","type":"uint256"},{"internalType":"uint256","name":"maximumHeight","type":"uint256"},{"internalType":"uint256","name":"cost","type":"uint256"},{"internalType":"uint256","name":"pesticide","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_minimumHeight","type":"uint256"},{"internalType":"uint256","name":"_maximumHeight","type":"uint256"},{"internalType":"uint256","name":"_cost","type":"uint256"},{"internalType":"uint256","name":"_pesticide","type":"uint256"}],"name":"mint","outputs":[{"internalType":"uint256","name":"result","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setLastDroneTokenId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getLastDroneTokenId","outputs":[{"internalType":"uint256","name":"result","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"droneId","type":"uint256"}],"name":"getMinimumHeight","outputs":[{"internalType":"uint256","name":"minimumHeight","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"droneId","type":"uint256"}],"name":"getMaximumHeight","outputs":[{"internalType":"uint256","name":"maximumHeight","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"droneId","type":"uint256"}],"name":"getCost","outputs":[{"internalType":"uint256","name":"cost","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"droneId","type":"uint256"}],"name":"getPesticide","outputs":[{"internalType":"uint256","name":"pesticide","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true}];
+        const ABIPlotToken = [{"inputs":[{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"plotId","type":"uint256"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"address","name":"me","type":"address"}],"name":"mintPlote","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"plotList","outputs":[{"internalType":"uint256","name":"minimumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"maximumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"acceptedPesticide","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_minimumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"_maximumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"_acceptedPesticide","type":"uint256"}],"name":"mint","outputs":[{"internalType":"uint256","name":"result","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"setLastPlotTokenId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getLastPlotTokenId","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"plotId","type":"uint256"}],"name":"getMinimumHeightAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"plotId","type":"uint256"}],"name":"getMaximumHeightAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"plotId","type":"uint256"}],"name":"getAcceptedPesticide","outputs":[{"internalType":"uint256","name":"acceptedPesticide","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function","constant":true}];
+        const ABIFumigationToken = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
+        const ABIFumigation = [{"inputs":[{"internalType":"address","name":"_addressTokenDrone","type":"address"},{"internalType":"address","name":"_addressTokenPlot","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"droneId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"plotId","type":"uint256"}],"name":"newFumigationEvent","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"fumigationList","outputs":[{"internalType":"uint256","name":"droneId","type":"uint256"},{"internalType":"uint256","name":"plotId","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_minimumHeight","type":"uint256"},{"internalType":"uint256","name":"_maximumHeight","type":"uint256"},{"internalType":"uint256","name":"_cost","type":"uint256"},{"internalType":"uint256","name":"_pesticide","type":"uint256"}],"name":"newDrone","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_minimumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"_maximumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"_acceptedPesticide","type":"uint256"}],"name":"newPlot","outputs":[{"internalType":"uint256","name":"result","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_droneId","type":"uint256"},{"internalType":"uint256","name":"_plotId","type":"uint256"}],"name":"newFumigation","outputs":[{"internalType":"bool","name":"result","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_droneId","type":"uint256"},{"internalType":"uint256","name":"_plotId","type":"uint256"}],"name":"fumigationValidation","outputs":[{"internalType":"bool","name":"result","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"_droneId","type":"uint256"},{"internalType":"uint256","name":"_plotId","type":"uint256"}],"name":"fumigationCost","outputs":[{"internalType":"uint256","name":"result","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"droneId","type":"uint256"}],"name":"infoDrone","outputs":[{"internalType":"uint256","name":"_minimumHeight","type":"uint256"},{"internalType":"uint256","name":"_maximumHeight","type":"uint256"},{"internalType":"uint256","name":"_cost","type":"uint256"},{"internalType":"uint256","name":"_pesticide","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"plotId","type":"uint256"}],"name":"infoPlot","outputs":[{"internalType":"uint256","name":"_minimumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"_maximumHeightAllowed","type":"uint256"},{"internalType":"uint256","name":"_acceptedPesticide","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getTotalDrones","outputs":[{"internalType":"uint256","name":"numTotalDrones","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"getTotalPlots","outputs":[{"internalType":"uint256","name":"numTotalPlots","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"setLastFumigationId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getLastFumigationId","outputs":[{"internalType":"uint256","name":"result","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"fumigationId","type":"uint256"}],"name":"infoFumigation","outputs":[{"internalType":"uint256","name":"_droneId","type":"uint256"},{"internalType":"uint256","name":"_plotId","type":"uint256"},{"internalType":"uint256","name":"_pesticide","type":"uint256"},{"internalType":"uint256","name":"_cost","type":"uint256"}],"stateMutability":"view","type":"function","constant":true}];
+
+        var instanceContractAddressDroneToken;
+        var instanceContractAddressPlotToken;
+        var instanceContractAddressFumigationToken;
+        var instanceContractAddressFumigation;
+
+        var accounts;
+        var ownerAccount;
+        var web3;
+
+      //Functions
+
+      //Start
+      async function start(){
+          window.addEventListener('load', async () => {
+              if (window.ethereum) {
+                    console.log("Metamask detected!");
+                    web3 = new Web3(window.ethereum);
+                    window.ethereum.enable();
+
+                    instanceContractAddressDroneToken = await new web3.eth.Contract(ABIDroneToken, contractAddressDroneToken);
+                    instanceContractAddressPlotToken = await new web3.eth.Contract(ABIPlotToken, contractAddressPlotToken);
+                    instanceContractAddressFumigationToken = await new web3.eth.Contract(ABIFumigationToken, contractAddressFumigationToken);
+                    instanceContractAddressFumigation = await new web3.eth.Contract(ABIFumigation, contractAddressFumigation);
+
+                    accounts = await web3.eth.getAccounts();
+                    ownerAccount = accounts[0];
+                    getAccount();
+
+                    visualizePlots();
+                    visualizeDrones();
+              }
+              else {
+                    console.error("Metamask not detected");
+              }
+          });
+      }
+      start();
+
+      //New Plot
+      async function newPlot(_owner, _minimumHeightAllowed, _maximumHeightAllowed, _pesticideAccepted){
+          var estimatedGas = await instanceContractAddressFumigation.methods.newPlot(_owner, _minimumHeightAllowed, _maximumHeightAllowed, _pesticideAccepted).estimateGas({gas: 4000000});
+          instanceContractAddressFumigation.methods.newPlot(_owner, _minimumHeightAllowed, _maximumHeightAllowed, _pesticideAccepted).send({from: _owner, gas: parseInt(estimatedGas)},function (error, result){
+            if(!error){
+              alert("OK Parcela creada: "+ result);
+              location.reload();
+            }else{
+              alert("ERROR Parcela creada: "+ error);
+            }
+          });
+
+          //Get List Plots
+          visualizePlots();
+      }
+
+      //Visualize Plots
+      async function visualizePlots(){
+          var totalNumberOfPlots = await getNumberOfPlots();
+          frmCreatePlot.id.value = totalNumberOfPlots;
+          frmCreatePlot.minimumHeight.value = "";
+          frmCreatePlot.maximumHeight.value = "";
+          frmCreatePlot.pesticideAccepted.value = 1;
+          totalNumberOfPlots--;
+
+          var pesticide = "";
+          var codeHtml = "";
+          codeHtml += `  <div class="table-responsive text-center">
+                            <table class="table">
+                              <caption>Listado de parcelas</caption>
+                              <thead class="bg-primary">
+                                <tr style="color: white;">
+                                  <th scope="col">ID</th>
+                                  <th scope="col">Altura mínima</th>
+                                  <th scope="col">Altura máxima</th>
+                                  <th scope="col">Pesticida aceptado</th>
+                                </tr>
+                              </thead>
+                              <tbody>`;
+
+                                for(var i = 1; i <= totalNumberOfPlots; i++){
+                                  await getInfoPlot(i).then(async function(plot){
+                                        switch (plot._acceptedPesticide) {
+                                            case '1':
+                                                pesticide="Pesticida A";
+                                                break;
+                                            case '2':
+                                                pesticide="Pesticida B";
+                                                break;
+                                            case '3':
+                                                pesticide="Pesticida C";
+                                                break;
+                                            case '4':
+                                                pesticide="Pesticida D";
+                                                break;
+                                            case '5':
+                                                pesticide="Pesticida E";
+                                                break;	
+                                        }
+                                        codeHtml += `
+                                                  <tr>
+                                                    <th scope="row" name="id" id="id">${i}</th>
+                                                    <td name="minimumHeightAllowed" id="minimumHeightAllowed">${plot._minimumHeightAllowed}</td>
+                                                    <td name="maximumHeightAllowed" id="maximumHeightAllowed">${plot._maximumHeightAllowed}</td>
+                                                    <td name="pesticideAccepted" id="pesticideAccepted">${pesticide}</td>
+                                                  </tr>`;
+                                  })
+                                }
+                    codeHtml += `  
+                              </tbody>
+                            </table>
+                          </div>`;
+                    
+          $("#plotsList").empty();
+          $("#plotsList").append(codeHtml); 
+      }
+
+      //New Fumigation
+      async function newFumigation(droneId, plotId){
+        var validateFumigation = await getValidationFumigation(droneId, plotId);
+        if(validateFumigation){
+            var costFumigation = await getCostFumigation(droneId, plotId);
+            alert("OK Fumigación validada. Coste: "+costFumigation+" FUMI tokens");
+
+            costFumigation = (costFumigation * 1000000000000000000);
+            costFumigation = costFumigation.toFixed(0);
+
+            var payment = await instanceContractAddressFumigationToken.methods.transfer(companyAccount, costFumigation).send({from:ownerAccount});          
+            if(payment.status == true){
+                alert("OK Pago FUMI tokens. Procedemos a fumigar.");
+
+                var gasFumigation = await instanceContractAddressFumigation.methods.newFumigation(droneId, plotId).estimateGas({gas: 4000000});
+                instanceContractAddressFumigation.methods.newFumigation(droneId, plotId).send({from:ownerAccount, gas: parseInt(gasFumigation)},
+                  function (error, result){
+                    if(!error){
+                      alert("OK Fumigación realizada: "+ result);
+
+                      frmNewFumigation.idDrone.value = "";
+                      frmNewFumigation.idPlot.value = "";
+                    }else{
+                      alert("ERROR Fumigación denegada: "+ error);
+                    }
+                });
+            }else{
+              alert("ERROR Pago FUMI tokens");
+            }
+        }else{
+          alert("ERROR Fumigación no validada. Revise los parámetros de parcela y dron");
+        }
+      }
+
+      //Get Validation Fumigation
+      async function getValidationFumigation(droneId, plotId){
+          var approve = await instanceContractAddressFumigation.methods.fumigationValidation(droneId, plotId).call()
+          return approve;
+      }
+
+      //Get Cost Fumigation
+      async function getCostFumigation(droneId, plotId){
+          var cost = await instanceContractAddressFumigation.methods.fumigationCost(droneId, plotId).call();
+          return cost;
+      }
+
+      //Get Number Of Plots
+      async function getNumberOfPlots() {
+          var totalNumberOfPlots = await instanceContractAddressFumigation.methods.getTotalPlots().call();
+          return totalNumberOfPlots;
+      }
+
+      //Get Info Plot
+      async function getInfoPlot(plotId) {
+          var infoPlot = await instanceContractAddressFumigation.methods.infoPlot(plotId).call();
+          return infoPlot;
+      }
+
+      //Event Create Plot
+      function eventCreatePlot(){
+        newPlot(ownerAccount, frmCreatePlot.minimumHeight.value, frmCreatePlot.maximumHeight.value, frmCreatePlot.pesticideAccepted.value);
+      }
+
+      //Event New Fumigation
+      function eventNewFumigation(){
+          newFumigation(frmNewFumigation.idDrone.value, frmNewFumigation.idPlot.value);
+      }
+
+      //Visualize Drones
+      async function visualizeDrones(){
+            var totalNumberOfDrones = await getNumberOfDrones();
+            totalNumberOfDrones--;
+            var pesticide = "";
+            var codeHtml = "";
+            codeHtml += `  <div class="table-responsive text-center">
+                              <table class="table">
+                                <caption>Listado de drones</caption>
+                                <thead class="bg-primary">
+                                  <tr style="color: white;">
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Altura mínima </th>
+                                    <th scope="col">Altura máxima </th>
+                                    <th scope="col">Coste </th>
+                                    <th scope="col">Pesticida proporcionado</th>
+                                  </tr>
+                                </thead>
+                                <tbody>`;
+
+                                  for(var i = 1; i <= totalNumberOfDrones; i++){
+                                    await getInfoDrone(i).then(async function(drone){
+                                        switch (drone._pesticide) {
+                                            case '1':
+                                                pesticide="Pesticida A";
+                                                break;
+                                            case '2':
+                                                pesticide="Pesticida B";
+                                                break;
+                                            case '3':
+                                                pesticide="Pesticida C";
+                                                break;
+                                            case '4':
+                                                pesticide="Pesticida D";
+                                                break;
+                                            case '5':
+                                                pesticide="Pesticida E";
+                                                break;	
+                                          }
+
+                                          codeHtml += `
+                                                    <tr>
+                                                      <th scope="row">${i}</th>
+                                                      <td>${drone._minimumHeight}</td>
+                                                      <td>${drone._maximumHeight}</td>
+                                                      <td>${drone._cost}</td>
+                                                      <td>${pesticide}</td>
+                                                    </tr>`;
+
+
+                                    })
+                                  }
+                      codeHtml += `  
+                                </tbody>
+                              </table>
+                            </div>`;
+                      
+            $("#dronesList").empty();
+		        $("#dronesList").html(codeHtml); 
+        }
+
+        //Get Number Of Drones
+        async function getNumberOfDrones() {
+            var totalNumberOfDrones = await instanceContractAddressFumigation.methods.getTotalDrones().call();
+            return totalNumberOfDrones;
+        }
+
+        //Get Info Drone
+        async function getInfoDrone(droneId) {
+            var infoDrone = await instanceContractAddressFumigation.methods.infoDrone(droneId).call();
+            return infoDrone;
+        }
+
+        //Get Account MetaMask
+        async function getAccount() {
+            await window.ethereum.request({method: 'eth_requestAccounts'});
+            window.web3 = new Web3(window.ethereum);
+
+            accounts = await web3.eth.getAccounts();     
+            ownerAccount = accounts[0];       
+
+            $("#idMetamask").empty();
+		        $("#idMetamask").html(ownerAccount); 
+        }
+
+        function eventConnectMetaMask(){
+            getAccount();
+        }
+  </script>
+  <!------------------------------------------------------------------------------------------------------------------------------------------>
+  <!------------------------------------------------------------E-N-D----S-C-R-I-P-T---------------------------------------------------------->
+  <!------------------------------------------------------------------------------------------------------------------------------------------>
+    <nav class="navbar navbar-dark bg-primary">
+        <a class="navbar-brand" href="main">Web3 Fumigación</a>
+        <form class="form-inline my-2 my-lg-0">
+          <a class="nav-link" name="idMetamask" id="idMetamask"></a>
+          <button class="btn btn-warning my-2 my-sm-0" type="button" onClick={eventConnectMetaMask()}>Cuenta MetaMask</button>
+        </form>
+    </nav>
+    <div class="jumbotron" style="height: 54rem;">
+        <p class="lead">Propietario Parcelas</p>
+        <p>Gestión de parcelas</p>
+        <div class="row">
+        <div class="col">
+        <form name="frmCreatePlot" id="frmCreatePlot" style="width: 54rem;">
+          <div class="row">
+              <div class="col">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1">ID Parcela</label>
+                    <input type="text" class="form-control" name="id" id="id" placeholder="ID Parcela" disabled>
+                  </div>
+              </div>
+              <div class="col">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1">Altura mínima permitida</label>
+                    <input type="number" class="form-control" name="minimumHeight" id="minimumHeight" placeholder="Altura mínima permitida">
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                  <label for="exampleFormControlInput1">Pesticida aceptado</label>
+                  <select class="form-control" name="pesticideAccepted" id="pesticideAccepted">
+                    <option value="1">Pesticida A</option>
+                    <option value="2">Pesticida B</option>
+                    <option value="3">Pesticida C</option>
+                    <option value="4">Pesticida D</option>
+                    <option value="5">Pesticida E</option>
+                  </select>
+              </div>
+          </div>
+              <div class="col">
+                  <div class="form-group">
+                      <label for="exampleFormControlInput1">Altura máxima permitida</label>
+                      <input type="number" class="form-control" name="maximumHeight" id="maximumHeight"  placeholder="Altura máxima permitida">
+                  </div>
+              </div>
+          </div>
+          <button type="button" class="btn btn-primary" onClick={eventCreatePlot()}>Crear Parcela</button>
+        </form>
+      </div>
+      <div class="col">
+        <div class="table-responsive" name="plotsList" id="plotsList" style="width: 54rem;">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p></p>
+        <hr class="my-4">
+        <p></p>
+        <hr class="my-4">
+        <p>Gestión de fumigaciones</p>
+        <form name="frmNewFumigation" id="frmNewFumigation" style="width: 54rem;">
+          <div class="row">
+              <div class="col">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1">ID Parcela</label>
+                    <input type="text" class="form-control" name="idPlot" id="idPlot" placeholder="ID Parcela">
+                  </div>
+              </div>
+              <div class="col">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1">ID Dron</label>
+                    <input type="text" class="form-control" name="idDrone" id="idDrone" placeholder="ID Dron">
+                  </div>
+              </div>
+          </div>
+          <button type="button" class="btn btn-primary" onClick={eventNewFumigation()}>Contratar Fumigación</button>
+        </form>
+      </div>
+      <div class="col">
+        <p></p>
+        <hr class="my-4">
+        <p></p>
+        <hr class="my-4">
+            <div class="table-responsive  text-center"  id="dronesList" style="width: 54rem;">
+            </div>
+          </div>
+    </div>
+  </div>   
+</body>
+</html>
